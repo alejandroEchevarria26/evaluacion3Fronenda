@@ -21,6 +21,8 @@ const withBasePath = (path: string) => {
   return `${basePath}${normalizedPath}`;
 };
 
+const heroBackgroundImage = withBasePath("/images/birthday-pink.jpeg");
+
 const emptyProductForm = {
   name: "",
   description: "",
@@ -726,7 +728,7 @@ export function KelitaSite() {
       ) : (
         <>
           <main>
-            <section id="inicio" className="hero">
+            <section id="inicio" className="hero" style={{ backgroundImage: `url("${heroBackgroundImage}")` }}>
               <div className="hero-overlay" />
               <div className="hero-content">
                 <span className="eyebrow eyebrow-light">Repostería artesanal &middot; Villa Alemana</span>
