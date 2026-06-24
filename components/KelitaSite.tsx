@@ -58,11 +58,48 @@ function formatPrice(product: Product) {
 function Header({ isAdmin, onToggleView }: { isAdmin: boolean; onToggleView: () => void }) {
   const [open, setOpen] = useState(false);
   const closeMenu = () => setOpen(false);
+  const toggleMenu = () => setOpen((value) => !value);
   const changeView = () => {
     closeMenu();
     onToggleView();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".site-header")) {
+        closeMenu();
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 900) {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <header className="site-header">
@@ -79,13 +116,14 @@ function Header({ isAdmin, onToggleView }: { isAdmin: boolean; onToggleView: () 
         type="button"
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
+        aria-controls="site-nav"
+        onClick={toggleMenu}
       >
         <span />
         <span />
       </button>
 
-      <nav className={open ? "site-nav is-open" : "site-nav"} aria-label="Navegación principal">
+      <nav id="site-nav" className={open ? "site-nav is-open" : "site-nav"} aria-label="Navegación principal">
         {isAdmin ? (
           <>
             <a href="#panel" onClick={closeMenu}>Resumen</a>
@@ -120,7 +158,15 @@ function ProductCard({ product, onOpen, onQuote, onDelete, isAdmin = false }: Pr
   return (
     <article className="product-card">
       <button className="product-image-button" type="button" onClick={() => onOpen(product)}>
-        <img src={withBasePath(product.image)} alt={product.name} loading="lazy" />
+        <img
+          src={withBasePath(product.image)}
+          alt={product.name}
+          loading="lazy"
+          decoding="async"
+          width={900}
+          height={675}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
         <span className="product-category">{product.category}</span>
       </button>
       <div className="product-copy">
@@ -192,7 +238,15 @@ function ProductModal({ product, onClose, onQuote, isAdmin }: ProductModalProps)
         <button className="modal-close" type="button" onClick={onClose} aria-label="Cerrar detalles">
           &times;
         </button>
-        <img className="modal-image" src={withBasePath(product.image)} alt={product.name} />
+        <img
+          className="modal-image"
+          src={withBasePath(product.image)}
+          alt={product.name}
+          loading="eager"
+          decoding="async"
+          width={1200}
+          height={900}
+        />
         <div className="modal-copy">
           <span className="eyebrow">{product.category}</span>
           <div className="modal-heading">

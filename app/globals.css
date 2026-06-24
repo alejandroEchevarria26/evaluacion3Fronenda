@@ -454,7 +454,9 @@ h3 {
 .product-image-button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: 12px;
+  object-fit: contain;
+  object-position: center;
   transition: transform 280ms ease;
 }
 
@@ -1149,7 +1151,10 @@ h3 {
   width: 100%;
   height: 100%;
   min-height: 560px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  padding: 20px;
+  background: #f6efe9;
 }
 
 .modal-copy {
@@ -1326,10 +1331,12 @@ h3 {
   }
 
   .menu-button {
+    position: relative;
+    z-index: 101;
     width: 42px;
     height: 42px;
     padding: 0;
-    display: grid;
+    display: grid !important;
     place-content: center;
     gap: 6px;
     border: 0;
@@ -1358,10 +1365,11 @@ h3 {
     border-radius: 7px;
     background: var(--white);
     box-shadow: var(--shadow);
+    z-index: 100;
   }
 
   .site-nav.is-open {
-    display: flex;
+    display: flex !important;
   }
 
   .site-nav > a:not(.button) {
